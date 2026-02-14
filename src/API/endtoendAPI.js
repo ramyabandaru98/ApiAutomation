@@ -96,9 +96,10 @@ async deletebooking(statuscode){
               "Content-Type": "application/json",
               "Accept": "application/json",
               "Cookie": "token="+`${Tokenid}`,
-              expectedStatus: statuscode
+              
 
             },
+            expectedStatus: statuscode
 
            });
       console.log(JSON.stringify(response.body, null, 2));
