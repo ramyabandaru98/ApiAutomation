@@ -1,4 +1,5 @@
 const supertest = require("supertest");
+const axios = require("axios");
 const Ajv = require("ajv");
 
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -111,8 +112,8 @@ ${JSON.stringify(validate.errors, null, 2)}`
         schema = null
     }) {
         try {
+            console.log("url:"+url+endpoint)
             if (!url) throw new Error("Base URL is required");
-
             const request = supertest(url);
             let req = request.post(endpoint).send(body);
 
@@ -132,6 +133,7 @@ ${JSON.stringify(validate.errors, null, 2)}`
             throw error;
         }
     }
+
 
     async put({
         url,
@@ -174,6 +176,7 @@ ${JSON.stringify(validate.errors, null, 2)}`
         schema = null
     }) {
         try {
+            console.log("url:"+url+endpoint)
             if (!url) throw new Error("Base URL is required");
 
             const request = supertest(url);
