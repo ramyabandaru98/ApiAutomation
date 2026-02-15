@@ -2,8 +2,6 @@ const ApiMethods = require("../utility/ApiMethods");
 const endpoints = require("../config/endpoints");
 const payloads = require("../test-data/payloads");
 
-
-
 const api = new ApiMethods();
 
 class BookingAPI {

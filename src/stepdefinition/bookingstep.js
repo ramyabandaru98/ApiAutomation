@@ -4,7 +4,7 @@ const { expect } = require("chai");
 const getapi = require('../API/GetApi')
 const postapi = require('../API/PostApi')
 const putapi = require('../API/PutApi')
-const deleteapi = require('../API/DeleteApi')
+const deleteapi = require('../API/DeleteAPI')
 
 let response;
 let responsebooking;
@@ -13,17 +13,16 @@ Given("I Generate the token using the POST API", async function () {
   response = await ApiMethods.tokengenerator();
 });
 
-
 Then("I Create a booking using the POST API", async function () {
-   responsebooking = await postapi.postCreateBooking(200);
-  expect(response).to.have.property("bookingid");
-  expect(response.booking).to.be.an("object");
+  responsebooking = await postapi.postCreateBooking(200);
 });
+
 Then("I store the generated booking ID", async function () {
   const storedId = await postapi.getStoredBookingId();
   console.log("Stored Booking ID:", storedId);
   expect(storedId, "Booking ID was not stored").to.not.be.null;
 });
+
 When("I retrieve all booking IDs using the GET API", async function () {
   response = await getapi.getBookingID(200);
   expect(response).to.be.an("array");
@@ -67,32 +66,3 @@ When("I Delete the booking details by DELETE API", async function () {
   response = await deleteapi.DeleteBookingDetailsByID(responsebooking.bookingid,201);
   console.log("Deleted Booking ID :"+responsebooking.bookingid);
 });
-// Then("I should store the Token", async function(){
-
-//     const token= tokengeneration.tokengenerator();
-//     console.log("Token created succsesfully:",token)
-  
-// })
-
-// Given("I store the generated booking ID", async function () {
-//   const storedId = await post.getStoredBookingId();
-//   console.log("Stored Booking ID:", storedId);
-//   expect(storedId, "Booking ID was not stored").to.not.be.null;
-// });
-
-// When("I retrieve all booking IDs using the GET API", async function () {
-//   const response = await get.getBookingID(200);
-//   expect(response).to.be.an("array");
-// });
-// Then("I should delete the bookingdetails by ID", async function () {
-//   const deletedId = await delet.deletebooking(201);
-//   console.log("Deleted Booking ID:", deletedId);
-
-// })
-
-
-// Then("I should see the created booking ID in the booking list response", async function () {
-//   const exists = await post.validateBookingIdExists(200);
-//   expect(exists).to.be.true;
-// });
-

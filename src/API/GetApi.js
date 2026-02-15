@@ -12,7 +12,7 @@ class GETAPI {
         endpoint: endpoints.getbookingid,
         expectedStatus: statuscode
       });
-
+       console.log(JSON.stringify(response.body, null, 2));
       return response.body;
     } catch (error) {
       console.error("Get Booking ID Error:", error.message);
@@ -27,7 +27,7 @@ class GETAPI {
         endpoint: endpoints.getbookingdetils+enterBokkingID,
         expectedStatus: statuscode
       });
-
+console.log(JSON.stringify(response.body, null, 2));
       return response.body;
     } catch (error) {
       console.error("Get Booking ID Error:", error.message);
