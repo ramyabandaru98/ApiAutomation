@@ -27,7 +27,7 @@ class BookingApiCollection {
         expectedStatus: statuscode
       });
 
-      //console.log(JSON.stringify(response.body, null, 2));
+      console.log(JSON.stringify(response.body, null, 2));
 
       this.bookingId = response.body.bookingid;
       
