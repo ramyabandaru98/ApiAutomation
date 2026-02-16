@@ -1,4 +1,4 @@
-const ApiMethods = require("../utility/ApiMethods");
+const ApiMethods = require("../Utility/ApiMethods");
 const endpoints = require("../config/endpoints");
 const payloads = require("../test-data/payloads");
 
@@ -18,7 +18,7 @@ class PUTAPI {
                 },
                 expectedStatus: statuscode
             });
-
+            console.log(JSON.stringify(response.body, null, 2));
             return response.body;
         } catch (error) {
             console.error("Update Booking PUT Error:", error.message);

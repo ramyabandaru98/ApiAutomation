@@ -1,4 +1,4 @@
-const ApiMethods = require("../utility/ApiMethods");
+const ApiMethods = require("../Utility/ApiMethods");
 const endpoints = require("../config/endpoints");
 const payloads = require("../test-data/payloads");
 const getapi = require('../API/GetApi')

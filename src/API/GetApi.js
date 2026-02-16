@@ -1,4 +1,4 @@
-const ApiMethods = require("../utility/ApiMethods");
+const ApiMethods = require("../Utility/ApiMethods");
 const endpoints = require("../config/endpoints");
 const payloads = require("../test-data/payloads");
 
@@ -27,7 +27,7 @@ class GETAPI {
         endpoint: endpoints.getbookingdetils+enterBokkingID,
         expectedStatus: statuscode
       });
-console.log(JSON.stringify(response.body, null, 2));
+      console.log(JSON.stringify(response.body, null, 2));
       return response.body;
     } catch (error) {
       console.error("Get Booking ID Error:", error.message);

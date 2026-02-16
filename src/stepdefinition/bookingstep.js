@@ -4,7 +4,7 @@ const { expect } = require("chai");
 const getapi = require('../API/GetApi')
 const postapi = require('../API/PostApi')
 const putapi = require('../API/PutApi')
-const deleteapi = require('../API/DeleteAPI')
+const deleteapi = require('../API/DeleteApi')
 
 let response;
 let responsebooking;

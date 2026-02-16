@@ -25,17 +25,17 @@ Feature: Booking API
   @GetBookingDetails
   Scenario: Get the booking ids
     Given I Generate the token using the POST API
-    When Get the Booking details by ID "266" using GET API
+    When Get the Booking details by ID "2106" using GET API
 
   @UpdateDetails
   Scenario: Update Booking
     Given I Generate the token using the POST API
-    When Update the Booking details by ID "266" using PUT API
+    When Update the Booking details by ID "2106" using PUT API
 
   @DeleteBookingDetailsById
   Scenario: Update Booking
     Given I Generate the token using the POST API
-    When Delete the Booking details by ID "267" using DELETE API
+    When Delete the Booking details by ID "2106" using DELETE API
 
 
 
