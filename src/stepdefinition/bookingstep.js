@@ -1,10 +1,11 @@
 const { When, Then, Given } = require("@cucumber/cucumber");
-const ApiMethods = require("../utility/ApiMethods");
+const ApiMethods = require("../Utility/ApiMethods");
 const { expect } = require("chai");
 const getapi = require('../API/GetApi')
 const postapi = require('../API/PostApi')
 const putapi = require('../API/PutApi')
-const deleteapi = require('../API/DeleteApi')
+const deleteapi = require('../API/DeleteAPI')
+
 
 let response;
 let responsebooking;
