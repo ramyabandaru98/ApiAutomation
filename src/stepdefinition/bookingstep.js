@@ -1,69 +1,144 @@
-const { When, Then, Given } = require("@cucumber/cucumber");
-const ApiMethods = require("../Utility/ApiMethods");
+const { Given, When, Then } = require("@cucumber/cucumber");
 const { expect } = require("chai");
-const getapi = require('../API/GetApi')
-const postapi = require('../API/PostApi')
-const putapi = require('../API/PutApi')
-const deleteapi = require('../API/DeleteAPI')
 
+const GETAPI = require("../API/GetApi");
+const POSTAPI = require("../API/PostApi");
+const PUTAPI = require("../API/PutApi");
+const DELETEAPI = require("../API/DeleteApi");
 
 let response;
-let responsebooking;
 
-Given("I Generate the token using the POST API", async function () {
-  response = await ApiMethods.tokengenerator();
-});
 
-Then("I Create a booking using the POST API", async function () {
-  responsebooking = await postapi.postCreateBooking(200);
-});
+function resolveBookingId(idFromFeature, world) {
+  return idFromFeature && idFromFeature.trim() !== ""
+    ? idFromFeature
+    : world.bookingId;
+}
 
-Then("I store the generated booking ID", async function () {
-  const storedId = await postapi.getStoredBookingId();
-  console.log("Stored Booking ID:", storedId);
-  expect(storedId, "Booking ID was not stored").to.not.be.null;
-});
 
-When("I retrieve all booking IDs using the GET API", async function () {
-  response = await getapi.getBookingID(200);
-  expect(response).to.be.an("array");
-});
 
-Then("I should see the created booking ID in the booking list response", async function () {
-  const exists = await postapi.validateBookingIdExists(200);
+Given(
+  "I create a booking with expected status {int} and:",
+  async function (expectedStatus, dataTable) {
+    const overrides = dataTable.rowsHash();
+
+    const postApi = new POSTAPI(this);
+
+    response = await postApi.postCreateBooking(
+      overrides,
+      expectedStatus
+    );
+
+    expect(response).to.have.property("bookingid");
+
+    // Store bookingId in world
+    this.bookingId = response.bookingid;
+
+    expect(this.bookingId).to.not.be.null;
+  }
+);
+
+
+
+When(
+  "I retrieve all booking IDs with expected status {int}",
+  async function (expectedStatus) {
+    const getApi = new GETAPI(this);
+
+    response = await getApi.getBookingID(expectedStatus);
+
+    expect(response).to.be.an("array");
+  }
+);
+
+Then("I should see the created booking in list", async function () {
+  expect(this.bookingId).to.not.be.null;
+
+  const exists = response.some(
+    (booking) => booking.bookingid === this.bookingId
+  );
+
   expect(exists).to.be.true;
 });
 
-When("Get the Booking details by ID {string} using GET API", async function (getbookingid) {
-  response = await getapi.getBookingDetails(getbookingid,200);
-  expect(response).to.be.an("Object");
-});
+
+When(
+  "I fetch booking details with id {string} and expect status {int}",
+  async function (bookingIdFromFeature, expectedStatus) {
+    const bookingId = resolveBookingId(
+      bookingIdFromFeature,
+      this
+    );
+
+    const getApi = new GETAPI(this);
+
+    response = await getApi.getBookingDetails(
+      bookingId,
+      expectedStatus
+    );
+
+    if (expectedStatus === 200) {
+      expect(response).to.be.an("object");
+      expect(response.firstname).to.exist;
+    }
+  }
+);
 
 
-When("I Fetch the booking details by GET API", async function () {
-  response = await getapi.getBookingDetails(responsebooking.bookingid,200);
-  expect(response).to.be.an("Object");
-});
 
-When("Update the Booking details by ID {string} using PUT API", async function (getbookingid) {
-  response = await putapi.updateBookingDetailsByID(getbookingid,200);
-  console.log("Updated Booking ID :"+getbookingid);
-});
+When(
+  "I update booking with id {string} and expect status {int} with:",
+  async function (
+    bookingIdFromFeature,
+    expectedStatus,
+    dataTable
+  ) {
+    const bookingId = resolveBookingId(
+      bookingIdFromFeature,
+      this
+    );
+
+    const overrides = dataTable.rowsHash();
+
+    const putApi = new PUTAPI(this);
+
+    response = await putApi.updateBookingDetailsByID(
+      bookingId,
+      overrides,
+      expectedStatus
+    );
+
+  }
+);
 
 
-When("I Update the booking details by PUT API", async function () {
-  response = await putapi.updateBookingDetailsByID(responsebooking.bookingid,200);
-  console.log("Updated Booking ID :"+responsebooking.bookingid);
-});
 
-When("Delete the Booking details by ID {string} using DELETE API", async function (getbookingid) {
-  response = await deleteapi.DeleteBookingDetailsByID(getbookingid,201);
-  console.log("Deleted Booking ID :"+getbookingid);
-  
-});
+When(
+  "I delete booking with id {string} and expect status {int}",
+  async function (bookingIdFromFeature, expectedStatus) {
+    const bookingId = resolveBookingId(
+      bookingIdFromFeature,
+      this
+    );
+
+    const deleteApi = new DELETEAPI(this);
+
+    response = await deleteApi.deleteBookingDetailsByID(
+      bookingId,
+      expectedStatus
+    );
+
+    if (expectedStatus === 201) {
+      this.bookingId = null;
+    }
+  }
+);
 
 
-When("I Delete the booking details by DELETE API", async function () {
-  response = await deleteapi.DeleteBookingDetailsByID(responsebooking.bookingid,201);
-  console.log("Deleted Booking ID :"+responsebooking.bookingid);
-});
+
+Then(
+  "the response status should be {int}",
+  function (expectedStatus) {
+    expect(response.status).to.equal(expectedStatus);
+  }
+);

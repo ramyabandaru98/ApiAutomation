@@ -1,41 +1,70 @@
-Feature: Booking API
+@Regression
+Feature: Booking API Automation
 
-  @E2EScenario @e2e
-  Scenario: Create a POST Booking
-    Given I Generate the token using the POST API
-    Then I Create a booking using the POST API
-    Then I store the generated booking ID
-    When I retrieve all booking IDs using the GET API
-    Then I should see the created booking ID in the booking list response
-    When I Fetch the booking details by GET API
-    When I Update the booking details by PUT API
-    When I Delete the booking details by DELETE API
+  @e2e @validscenario
+  Scenario: Booking Scenario with CRUD Operations
 
-  @createPostBooking
-  Scenario: Create a POST Booking
-    Given I Generate the token using the POST API
-    Then I Create a booking using the POST API
-    Then I store the generated booking ID
+    Given I create a booking with expected status 200 and:
+      | firstname  | John  |
+      | lastname   | mark |
+      | totalprice | 5000  |
 
-  @GetBookingId
-  Scenario: Retrieve all the bookings
-    Given I Generate the token using the POST API
-    When I retrieve all booking IDs using the GET API
+    When I retrieve all booking IDs with expected status 200
+    Then I should see the created booking in list
 
-  @GetBookingDetails
-  Scenario: Get the booking ids
-    Given I Generate the token using the POST API
-    When Get the Booking details by ID "5908" using GET API
+    When I fetch booking details with id "" and expect status 200
 
-  @UpdateDetails
-  Scenario: Update Booking
-    Given I Generate the token using the POST API
-    When Update the Booking details by ID "5908" using PUT API
+    When I update booking with id "" and expect status 200 with:
+      | firstname | UpdatedSam |
 
-  @DeleteBookingDetailsById
-  Scenario: Update Booking
-    Given I Generate the token using the POST API
-    When Delete the Booking details by ID "5908" using DELETE API
+    When I delete booking with id "" and expect status 201
 
 
+# E2E Negative Scenario for booking
 
+  @e2eNegative @invalidScenario
+  Scenario: Booking Scenario with CRUD Operations
+
+    Given I create a booking with expected status 400 and:
+      | firstname  | John   |
+      | lastname   | Mark |
+      | totalprice | @#$%  |
+
+    When I retrieve all booking IDs with expected status 200
+    Then I should see the created booking in list
+    When I fetch booking details with id "" and expect status 200
+    When I update booking with id "" and expect status 200 with:
+      | firstname | Updatedsam |
+
+    When I delete booking with id "" and expect status 201
+
+  @getWithFeatureId
+  Scenario: Fetch booking using bookingId
+    When I fetch booking details with id "1" and expect status 200
+
+
+  #  SCENARIO 3 - Update Booking Using ID From Feature File
+
+  @updateWithFeatureId
+  Scenario: Update booking using bookingId
+    When I update booking with id "1" and expect status 200 with:
+      | firstname | FeatureUpdated |
+
+
+  #  SCENARIO 4 - Delete Booking Using ID From Feature File
+
+  @deleteWithFeatureId
+  Scenario: Delete booking using bookingId
+    When I delete booking with id "2" and expect status 201
+
+
+  #  SCENARIO 5 - Negative Scenario (Invalid Booking ID)
+  @negative
+  Scenario: Fetch booking with invalid bookingId
+    When I fetch booking details with id "9999999" and expect status 404
+
+
+  #  SCENARIO 6 - Negative Delete Scenario
+  @negativeDelete
+  Scenario: Delete non-existing booking
+    When I delete booking with id "9999999" and expect status 405

@@ -1,30 +1,51 @@
-const ApiMethods = require("../Utility/ApiMethods");
+const ApiMethods = require("../utility/ApiMethods");
 const endpoints = require("../config/endpoints");
 const payloads = require("../test-data/payloads");
 
 class PUTAPI {
 
-    async updateBookingDetailsByID(enterBokkingID, statuscode) {
-        try {
-            const Tokenid = await ApiMethods.tokengenerator();
-            const response = await ApiMethods.put({
-                url: endpoints.url,
-                endpoint: endpoints.getbookingdetils + enterBokkingID,
-                body: payloads.putbooking.updatebooking,
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json",
-                    "Cookie": "token=" + `${Tokenid}`,
-                },
-                expectedStatus: statuscode
-            });
-            console.log(JSON.stringify(response.body, null, 2));
-            return response.body;
-        } catch (error) {
-            console.error("Update Booking PUT Error:", error.message);
-            throw error;
+    constructor(world = null) {
+        this.api = new ApiMethods(world);
+        this.world = world;
+    }
+
+async updateBookingDetailsByID(
+    enterBookingID = null,
+    overrides = {},
+    statuscode = 200
+) {
+    try {
+
+        const bookingId = enterBookingID || this.world?.bookingId;
+
+        if (!bookingId) {
+            throw new Error("Booking ID not available for update");
         }
+
+        const token = await this.api.tokengenerator();
+
+        const dynamicPayload = await this.api.buildPayload(
+            payloads.putbooking.updatebooking,
+            overrides
+        );
+
+        const response = await this.api.request({
+            method: "PUT",
+            url: endpoints.url,
+            endpoint: endpoints.getbookingdetils + bookingId,
+            body: dynamicPayload,
+            token: token,
+            expectedStatus: statuscode
+        });
+
+        return response.body;
+
+    } catch (error) {
+        console.error("Update Booking PUT Error:", error.message);
+        throw error;
     }
 }
 
-module.exports = new PUTAPI();
+}
+
+module.exports = PUTAPI;
